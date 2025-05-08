@@ -4,13 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hafazan Umara Leaderboard</title>
+  <link rel="icon" type="image/png" href="/favicon.png"> <!-- Added favicon -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js"></script>
-  <!-- XLSX untuk muat naik fail Excel -->
+  <!-- XLSX for Excel file upload -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
+    /* Same CSS as provided, no changes needed */
     * {
       margin: 0;
       padding: 0;
@@ -529,7 +528,7 @@
     </div>
     <div class="container">
       <div class="box">
-        <form onsubmit="return false;">
+        <form id="loginForm">
           <div class="form-group">
             <label for="loginId">ID Pengguna</label>
             <input type="text" id="loginId" placeholder="Contoh: ahmad">
@@ -538,7 +537,7 @@
             <label for="loginPassword">Kata Laluan</label>
             <input type="password" id="loginPassword" placeholder="Kata Laluan">
           </div>
-          <button class="button" onclick="login()">Log Masuk</button>
+          <button class="button" type="submit">Log Masuk</button>
         </form>
       </div>
     </div>
@@ -548,12 +547,12 @@
   <div id="leaderboardPage" class="hidden">
     <div class="header">
       <h2>Carta Pendahulu</h2>
-      <button onclick="logout()">Log Keluar</button>
+      <button id="logoutBtn">Log Keluar</button>
     </div>
     <div class="container">
       <div class="form-group">
         <label for="rankFilterLeaderboard">Pilih Pangkat</label>
-        <select id="rankFilterLeaderboard" onchange="loadLeaderboard()">
+        <select id="rankFilterLeaderboard">
           <option value="">Semua</option>
           <option value="Warrior">Warrior</option>
           <option value="Elite">Elite</option>
@@ -573,7 +572,7 @@
   <div id="profilePage" class="hidden">
     <div class="header">
       <h2 id="profileHeader">Kemajuan Anak</h2>
-      <button onclick="logout()">Log Keluar</button>
+      <button id="logoutBtnProfile">Log Keluar</button>
     </div>
     <div class="container">
       <!-- Kandungan Ibu Bapa -->
@@ -699,7 +698,7 @@
             <label for="targetDeadline">Tarikh Akhir:</label>
             <input type="date" id="targetDeadline">
           </div>
-          <button class="button" onclick="setWeeklyTarget()">Tetapkan Target</button>
+          <button class="button" id="setWeeklyTargetBtn">Tetapkan Target</button>
           <div class="box" style="margin-top: 20px;">
             <h3>Senarai Pelajar & Jumlah Lencana</h3>
             <div class="badges-ranking-table-wrapper">
@@ -766,7 +765,7 @@
   <div id="evaluationPage" class="hidden">
     <div class="header">
       <h2>Rekod Hafazan</h2>
-      <button onclick="logout()">Log Keluar</button>
+      <button id="logoutBtnEval">Log Keluar</button>
     </div>
     <div class="container">
       <div class="box">
@@ -794,7 +793,7 @@
         </div>
         <div class="form-group">
           <label for="evalLevel">Tahap Bacaan</label>
-          <select id="evalLevel" onchange="calculatePoints()">
+          <select id="evalLevel">
             <option value="3">3 ayat = 1 mata</option>
             <option value="5">5 ayat = 2 mata</option>
             <option value="7">7 ayat = 3 mata</option>
@@ -809,7 +808,7 @@
           <textarea id="evalNotes" placeholder="Masukkan catatan terperinci tentang bacaan pelajar"></textarea>
         </div>
         <p>Mata: <span id="evalPoints">0</span></p>
-        <button class="button" onclick="submitEvaluation()">Hantar</button>
+        <button class="button" id="submitEvalBtn">Hantar</button>
       </div>
     </div>
     <div class="nav-bar"></div>
@@ -819,12 +818,12 @@
   <div id="adminPage" class="hidden">
     <div class="header">
       <h2>Tetapan Admin</h2>
-      <button onclick="logout()">Log Keluar</button>
+      <button id="logoutBtnAdmin">Log Keluar</button>
     </div>
     <div class="container">
       <div class="box">
         <h3>Tambah Pelajar & Ibu Bapa</h3>
-        <form id="addStudentParentForm" onsubmit="return false;">
+        <form id="addStudentParentForm">
           <div class="form-group">
             <label for="studentName">Nama Pelajar</label>
             <input type="text" id="studentName" placeholder="Contoh: Ali">
@@ -840,7 +839,7 @@
             <input type="password" id="parentPassword" placeholder="Kata Laluan (kosongkan jika ibu bapa sedia ada)">
             <div id="parentPasswordError" class="error-message"></div>
           </div>
-          <button class="button" onclick="addStudentAndParent()">Tambah</button>
+          <button class="button" type="submit">Tambah</button>
         </form>
       </div>
       <div class="box">
@@ -857,7 +856,7 @@
           <label for="addTeacherPassword">Kata Laluan</label>
           <input type="password" id="addTeacherPassword" placeholder="Kata Laluan">
         </div>
-        <button class="button" onclick="addTeacher()">Tambah Guru</button>
+        <button class="button" id="addTeacherBtn">Tambah Guru</button>
       </div>
       <div class="box">
         <h3>Hapus Guru</h3>
@@ -877,7 +876,7 @@
           <label for="newPassword">Kata Laluan Baharu</label>
           <input type="password" id="newPassword" placeholder="Kata Laluan Baharu">
         </div>
-        <button class="button" onclick="updatePassword()">Kemas Kini</button>
+        <button class="button" id="updatePasswordBtn">Kemas Kini</button>
       </div>
       <div class="box">
         <h3>Muat Naik Data Pelajar (Excel)</h3>
@@ -885,504 +884,1263 @@
           <label for="studentFile">Pilih Fail Excel (Format: Nama Pelajar, Nama Ibu Bapa, Kata Laluan)</label>
           <input type="file" id="studentFile" accept=".xlsx, .xls">
         </div>
-        <button class="button" onclick="uploadStudents()">Muat Data</button>
+        <button class="button" id="uploadStudentsBtn">Muat Data</button>
       </div>
     </div>
     <div class="nav-bar"></div>
   </div>
-  <script> 
-  // Initialize Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyACIvx3K0kvQPbaZsCe5i3-AF3XMM5hOQo",
-  authDomain: "hafazan-umara-leaderboard.firebaseapp.com",
-  databaseURL: "https://hafazan-umara-leaderboard-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "hafazan-umara-leaderboard",
-  storageBucket: "hafazan-umara-leaderboard.firebasestorage.app",
-  messagingSenderId: "49389761736",
-  appId: "1:49389761736:web:e0e013b540365953e4a1fd"
-};
 
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+  <script type="module">
+    // Import Firebase Modular SDK
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { 
+      getDatabase, 
+      ref, 
+      set, 
+      get, 
+      push, 
+      onValue, 
+      remove, 
+      update 
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
 
-let currentUser = null;
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyACIvx3K0kvQPbaZsCe5i3-AF3XMM5hOQo",
+      authDomain: "hafazan-umara-leaderboard.firebaseapp.com",
+      databaseURL: "https://hafazan-umara-leaderboard-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "hafazan-umara-leaderboard",
+      storageBucket: "hafazan-umara-leaderboard.firebasestorage.app",
+      messagingSenderId: "49389761736",
+      appId: "1:49389761736:web:e0e013b540365953e4a1fd"
+    };
 
-// Firebase Helper Functions
-async function saveUser(userId, userData) {
-  try {
-    await db.ref(`users/${userId}`).set(userData);
-  } catch (error) {
-    console.error('Error saving user:', error);
-    throw error;
-  }
-}
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-async function getUser(userId) {
-  try {
-    const snapshot = await db.ref(`users/${userId}`).once('value');
-    return snapshot.exists() ? snapshot.val() : null;
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    return null;
-  }
-}
+    let currentUser = null;
 
-async function getAllUsers() {
-  try {
-    const snapshot = await db.ref('users').once('value');
-    return snapshot.exists() ? snapshot.val() : {};
-  } catch (error) {
-    console.error('Error fetching all users:', error);
-    return {};
-  }
-}
-
-async function saveStudent(studentId, studentData) {
-  try {
-    await db.ref(`students/${studentId}`).set(studentData);
-  } catch (error) {
-    console.error('Error saving student:', error);
-    throw error;
-  }
-}
-
-async function getStudent(studentId) {
-  try {
-    const snapshot = await db.ref(`students/${studentId}`).once('value');
-    return snapshot.exists() ? snapshot.val() : null;
-  } catch (error) {
-    console.error('Error fetching student:', error);
-    return null;
-  }
-}
-
-async function getAllStudents() {
-  try {
-    const snapshot = await db.ref('students').once('value');
-    return snapshot.exists() ? snapshot.val() : {};
-  } catch (error) {
-    console.error('Error fetching all students:', error);
-    return {};
-  }
-}
-
-async function saveNotification(notificationData) {
-  try {
-    const newNotificationRef = db.ref('notifications').push();
-    await newNotificationRef.set(notificationData);
-    return newNotificationRef.key;
-  } catch (error) {
-    console.error('Error saving notification:', error);
-    throw error;
-  }
-}
-
-async function getNotifications(userId) {
-  try {
-    const snapshot = await db.ref('notifications').once('value');
-    if (snapshot.exists()) {
-      const notifications = snapshot.val();
-      return Object.values(notifications).filter(n => n.userId === userId);
-    }
-    return [];
-  } catch (error) {
-    console.error('Error fetching notifications:', error);
-    return [];
-  }
-}
-
-async function saveTargetHistory(targetData) {
-  try {
-    const newTargetRef = db.ref('targetHistory').push();
-    await newTargetRef.set(targetData);
-    return newTargetRef.key;
-  } catch (error) {
-    console.error('Error saving target history:', error);
-    throw error;
-  }
-}
-
-async function getTargetHistory() {
-  try {
-    const snapshot = await db.ref('targetHistory').once('value');
-    return snapshot.exists() ? Object.values(snapshot.val()) : [];
-  } catch (error) {
-    console.error('Error fetching target history:', error);
-    return [];
-  }
-}
-
-async function updateTargetHistory(targetId, updates) {
-  try {
-    await db.ref(`targetHistory/${targetId}`).update(updates);
-  } catch (error) {
-    console.error('Error updating target history:', error);
-    throw error;
-  }
-}
-
-async function saveActivityLog(logData) {
-  try {
-    const newLogRef = db.ref('activityLogs').push();
-    await newLogRef.set(logData);
-    return newLogRef.key;
-  } catch (error) {
-    console.error('Error saving activity log:', error);
-    throw error;
-  }
-}
-
-async function deleteStudent(studentId) {
-  try {
-    await db.ref(`students/${studentId}`).remove();
-  } catch (error) {
-    console.error('Error deleting student:', error);
-    throw error;
-  }
-}
-
-async function deleteUser(userId) {
-  try {
-    await db.ref(`users/${userId}`).remove();
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    throw error;
-  }
-}
-
-function listenForStudentUpdates(callback) {
-  const studentsRef = db.ref('students');
-  studentsRef.on('value', (snapshot) => {
-    if (snapshot.exists()) {
-      callback(snapshot.val());
-    }
-  }, (error) => {
-    console.error('Error listening to student updates:', error);
-  });
-}
-
-function listenForNotificationUpdates(userId, callback) {
-  const notificationsRef = db.ref('notifications');
-  notificationsRef.on('value', (snapshot) => {
-    if (snapshot.exists()) {
-      const notifications = Object.values(snapshot.val()).filter(n => n.userId === userId);
-      callback(notifications);
-    }
-  }, (error) => {
-    console.error('Error listening to notification updates:', error);
-  });
-}
-
-function listenForTargetHistoryUpdates(callback) {
-  const targetHistoryRef = db.ref('targetHistory');
-  targetHistoryRef.on('value', (snapshot) => {
-    if (snapshot.exists()) {
-      callback(Object.values(snapshot.val()));
-    }
-  }, (error) => {
-    console.error('Error listening to target history updates:', error);
-  });
-}
-
-// DOM Loaded Event
-document.addEventListener('DOMContentLoaded', () => {
-  // Login
-  window.login = async function () {
-    const loginId = document.getElementById('loginId')?.value;
-    const loginPassword = document.getElementById('loginPassword')?.value;
-    if (!loginId || !loginPassword) {
-      alert('Sila masukkan ID dan kata laluan.');
-      return;
+    // Firebase Helper Functions
+    async function saveUser(userId, userData) {
+      try {
+        await set(ref(db, `users/${userId}`), userData);
+      } catch (error) {
+        console.error('Error saving user:', error);
+        throw error;
+      }
     }
 
-    const user = await getUser(loginId);
-    if (user && user.password === loginPassword) {
-      currentUser = { ...user, uid: loginId };
-      loadUserData();
-    } else {
-      alert('ID atau kata laluan salah!');
-    }
-  };
-
-  // Logout
-  window.logout = function () {
-    currentUser = null;
-    showPage('loginPage');
-  };
-
-  // Load User Data
-  window.loadUserData = function () {
-    const profileHeader = document.getElementById('profileHeader');
-    const parentContent = document.getElementById('parentContent');
-    const teacherContent = document.getElementById('teacherContent');
-    const evalNav = document.getElementById('evalNav');
-    const adminNav = document.getElementById('adminNav');
-
-    if (!profileHeader || !parentContent || !teacherContent) {
-      console.error('Ralat: Elemen DOM kritikal tidak ditemui.');
-      alert('Ralat aplikasi: Sila hubungi pentadbir.');
-      return;
+    async function getUser(userId) {
+      try {
+        const snapshot = await get(ref(db, `users/${userId}`));
+        return snapshot.exists() ? snapshot.val() : null;
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        return null;
+      }
     }
 
-    if (currentUser.role === 'parent') {
-      profileHeader.textContent = 'Kemajuan Anak';
-      parentContent.classList.remove('hidden');
-      teacherContent.classList.add('hidden');
-      if (evalNav) evalNav.classList.add('hidden');
-      if (adminNav) adminNav.classList.add('hidden');
-      loadParentDashboard();
-    } else {
-      profileHeader.textContent = 'Analisis';
-      parentContent.classList.add('hidden');
-      teacherContent.classList.remove('hidden');
-      if (evalNav) evalNav.classList.remove('hidden');
-      if (adminNav) adminNav.classList.remove('hidden');
+    async function getAllUsers() {
+      try {
+        const snapshot = await get(ref(db, 'users'));
+        return snapshot.exists() ? snapshot.val() : {};
+      } catch (error) {
+        console.error('Error fetching all users:', error);
+        return {};
+      }
+    }
+
+    async function saveStudent(studentId, studentData) {
+      try {
+        await set(ref(db, `students/${studentId}`), studentData);
+      } catch (error) {
+        console.error('Error saving student:', error);
+        throw error;
+      }
+    }
+
+    async function getStudent(studentId) {
+      try {
+        const snapshot = await get(ref(db, `students/${studentId}`));
+        return snapshot.exists() ? snapshot.val() : null;
+      } catch (error) {
+        console.error('Error fetching student:', error);
+        return null;
+      }
+    }
+
+    async function getAllStudents() {
+      try {
+        const snapshot = await get(ref(db, 'students'));
+        return snapshot.exists() ? snapshot.val() : {};
+      } catch (error) {
+        console.error('Error fetching all students:', error);
+        return {};
+      }
+    }
+
+    async function saveNotification(notificationData) {
+      try {
+        const newNotificationRef = push(ref(db, 'notifications'));
+        await set(newNotificationRef, notificationData);
+        return newNotificationRef.key;
+      } catch (error) {
+        console.error('Error saving notification:', error);
+        throw error;
+      }
+    }
+
+    async function getNotifications(userId) {
+      try {
+        const snapshot = await get(ref(db, 'notifications'));
+        if (snapshot.exists()) {
+          const notifications = snapshot.val();
+          return Object.values(notifications).filter(n => n.userId === userId);
+        }
+        return [];
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+        return [];
+      }
+    }
+
+    async function saveTargetHistory(targetData) {
+      try {
+        const newTargetRef = push(ref(db, 'targetHistory'));
+        await set(newTargetRef, targetData);
+        return newTargetRef.key;
+      } catch (error) {
+        console.error('Error saving target history:', error);
+        throw error;
+      }
+    }
+
+    async function getTargetHistory() {
+      try {
+        const snapshot = await get(ref(db, 'targetHistory'));
+        return snapshot.exists() ? Object.values(snapshot.val()) : [];
+      } catch (error) {
+        console.error('Error fetching target history:', error);
+        return [];
+      }
+    }
+
+    async function updateTargetHistory(targetId, updates) {
+      try {
+        await update(ref(db, `targetHistory/${targetId}`), updates);
+      } catch (error) {
+        console.error('Error updating target history:', error);
+        throw error;
+      }
+    }
+
+    async function saveActivityLog(logData) {
+      try {
+        const newLogRef = push(ref(db, 'activityLogs'));
+        await set(newLogRef, logData);
+        return newLogRef.key;
+      } catch (error) {
+        console.error('Error saving activity log:', error);
+        throw error;
+      }
+    }
+
+    async function deleteStudent(studentId) {
+      try {
+        await remove(ref(db, `students/${studentId}`));
+      } catch (error) {
+        console.error('Error deleting student:', error);
+        throw error;
+      }
+    }
+
+    async function deleteUser(userId) {
+      try {
+        await remove(ref(db, `users/${userId}`));
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        throw error;
+      }
+    }
+
+    function listenForStudentUpdates(callback) {
+      const studentsRef = ref(db, 'students');
+      onValue(studentsRef, (snapshot) => {
+        if (snapshot.exists()) {
+          callback(snapshot.val());
+        }
+      }, (error) => {
+        console.error('Error listening to student updates:', error);
+      });
+    }
+
+    function listenForNotificationUpdates(userId, callback) {
+      const notificationsRef = ref(db, 'notifications');
+      onValue(notificationsRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const notifications = Object.values(snapshot.val()).filter(n => n.userId === userId);
+          callback(notifications);
+        }
+      }, (error) => {
+        console.error('Error listening to notification updates:', error);
+      });
+    }
+
+    function listenForTargetHistoryUpdates(callback) {
+      const targetHistoryRef = ref(db, 'targetHistory');
+      onValue(targetHistoryRef, (snapshot) => {
+        if (snapshot.exists()) {
+          callback(Object.values(snapshot.val()));
+        }
+      }, (error) => {
+        console.error('Error listening to target history updates:', error);
+      });
+    }
+
+    // Login Function
+    async function login(event) {
+      event.preventDefault();
+      const loginId = document.getElementById('loginId')?.value;
+      const loginPassword = document.getElementById('loginPassword')?.value;
+      if (!loginId || !loginPassword) {
+        alert('Sila masukkan ID dan kata laluan.');
+        return;
+      }
+
+      const user = await getUser(loginId);
+      if (user && user.password === loginPassword) {
+        currentUser = { ...user, uid: loginId };
+        loadUserData();
+      } else {
+        alert('ID atau kata laluan salah!');
+      }
+    }
+
+    // Logout Function
+    function logout() {
+      currentUser = null;
+      showPage('loginPage');
+    }
+
+    // Load User Data
+    function loadUserData() {
+      const profileHeader = document.getElementById('profileHeader');
+      const parentContent = document.getElementById('parentContent');
+      const teacherContent = document.getElementById('teacherContent');
+      const evalNav = document.getElementById('evalNav');
+      const adminNav = document.getElementById('adminNav');
+
+      if (!profileHeader || !parentContent || !teacherContent) {
+        console.error('Ralat: Elemen DOM kritikal tidak ditemui.');
+        alert('Ralat aplikasi: Sila hubungi pentadbir.');
+        return;
+      }
+
+      if (currentUser.role === 'parent') {
+        profileHeader.textContent = 'Kemajuan Anak';
+        parentContent.classList.remove('hidden');
+        teacherContent.classList.add('hidden');
+        if (evalNav) evalNav.classList.add('hidden');
+        if (adminNav) adminNav.classList.add('hidden');
+        loadParentDashboard();
+      } else {
+        profileHeader.textContent = 'Analisis';
+        parentContent.classList.add('hidden');
+        teacherContent.classList.remove('hidden');
+        if (evalNav) evalNav.classList.remove('hidden');
+        if (adminNav) adminNav.classList.remove('hidden');
+        loadTeacherDashboard();
+      }
+      showPage('profilePage');
+    }
+
+    // Show Page
+    function showPage(pageId) {
+      document.querySelectorAll('div[id$="Page"]').forEach(page => {
+        page.classList.add('hidden');
+      });
+
+      const targetPage = document.getElementById(pageId);
+      if (targetPage) {
+        if (currentUser?.role === 'parent' && ['evaluationPage', 'adminPage'].includes(pageId)) {
+          alert('Akses ditolak. Ibu bapa hanya boleh melihat Carta Pendahulu dan Kemajuan Anak.');
+          return;
+        }
+        targetPage.classList.remove('hidden');
+      } else {
+        console.error(`Halaman dengan ID ${pageId} tidak ditemui.`);
+      }
+
+      renderNavBar(pageId);
+
+      if (pageId === 'leaderboardPage') loadLeaderboard();
+      if (pageId === 'profilePage') {
+        if (currentUser?.role === 'parent') loadParentDashboard();
+        else loadTeacherDashboard();
+      }
+      if (pageId === 'evaluationPage') loadEvaluationPage();
+      if (pageId === 'adminPage') loadAdminPage();
+    }
+
+    // Render Navigation Bar
+    function renderNavBar(activePage) {
+      document.querySelectorAll('.nav-bar').forEach(navBar => {
+        navBar.innerHTML = '';
+        if (!currentUser || activePage === 'loginPage') {
+          navBar.style.display = 'none';
+          return;
+        }
+
+        navBar.style.display = 'flex';
+        const pages = currentUser.role === 'parent' ? [
+          { icon: '🏆', pageId: 'leaderboardPage', title: 'Carta Pendahulu' },
+          { icon: '👤', pageId: 'profilePage', title: 'Kemajuan Anak' }
+        ] : [
+          { icon: '🏆', pageId: 'leaderboardPage', title: 'Carta Pendahulu' },
+          { icon: '+', pageId: 'evaluationPage', id: 'evalNav', title: 'Penilaian' },
+          { icon: '👤', pageId: 'profilePage', title: 'Papan Pemuka' },
+          { icon: '⚙️', pageId: 'adminPage', id: 'adminNav', title: 'Tetapan Admin' }
+        ];
+
+        pages.forEach(page => {
+          const btn = document.createElement('button');
+          btn.textContent = page.icon;
+          btn.title = page.title;
+          btn.addEventListener('click', () => showPage(page.pageId));
+          if (page.id) btn.id = page.id;
+          if (page.pageId === activePage) btn.classList.add('active');
+          if (currentUser.role === 'parent' && (page.id === 'evalNav' || page.id === 'adminNav')) {
+            btn.classList.add('hidden');
+          }
+          navBar.appendChild(btn);
+        });
+      });
+    }
+
+    // Load Leaderboard
+    async function loadLeaderboard() {
+      const rankFilter = document.getElementById('rankFilterLeaderboard')?.value || '';
+      const list = document.getElementById('leaderboardList');
+      if (!list) return;
+
+      list.innerHTML = '';
+      const students = await getAllStudents();
+      let studentList = Object.values(students);
+      if (rankFilter) studentList = studentList.filter(s => s.rank === rankFilter);
+      studentList.sort((a, b) => b.points - a.points);
+
+      studentList.forEach((student, index) => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.textContent = `${index + 1}. ${student.name} - ${student.points} mata - ${student.rank}`;
+        list.appendChild(div);
+      });
+    }
+
+    // Load Parent Dashboard
+    async function loadParentDashboard() {
+      const progressTrackers = document.getElementById('progressTrackers');
+      const notificationList = document.getElementById('notificationList');
+      if (!progressTrackers || !notificationList || !currentUser?.children) return;
+
+      // Load notifications
+      listenForNotificationUpdates(currentUser.uid, (notifications) => {
+        notificationList.innerHTML = '';
+        notifications
+          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .forEach(n => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${n.date}</td>
+              <td>${n.text}</td>
+            `;
+            notificationList.appendChild(tr);
+          });
+      });
+
+      progressTrackers.innerHTML = '';
+      const weeklyTarget = parseInt(localStorage.getItem('weeklyTarget') || 0);
+      const targetUnit = localStorage.getItem('targetUnit') || 'ayat';
+      const targetStartDate = new Date(localStorage.getItem('targetStartDate') || new Date());
+      const targetDeadline = new Date(localStorage.getItem('targetDeadline') || new Date());
+      const targetSetDate = new Date(localStorage.getItem('targetSetDate') || new Date());
+
+      const today = new Date();
+      const daysUntilDeadline = Math.ceil((targetDeadline - today) / (1000 * 60 * 60 * 24));
+      const isDeadlineNear = daysUntilDeadline <= 2 && daysUntilDeadline >= 0;
+      const isNewCycle = today.toISOString().split('T')[0] === targetSetDate.toISOString().split('T')[0];
+      const isTargetActive = today >= targetStartDate && today <= targetDeadline;
+
+      for (const childId of currentUser.children) {
+        const student = await getStudent(childId);
+        if (!student) continue;
+
+        const rankPoints = {
+          Warrior: [0, 120],
+          Elite: [121, 180],
+          Master: [181, 240],
+          Grandmaster: [241, 300],
+          Epic: [301, 360],
+          Legend: [361, 420],
+          Mythic: [421, 480]
+        };
+        const [min, max] = rankPoints[student.rank] || [0, 120];
+        const progressPercentage = Math.min(100, Math.max(0, ((student.points - min) / (max - min)) * 100));
+
+        const weeklyPoints = student.records?.reduce((sum, record) => {
+          const recordDate = new Date(record.date);
+          if (
+            recordDate >= targetSetDate &&
+            recordDate >= targetStartDate &&
+            recordDate <= targetDeadline
+          ) {
+            return sum + record.points;
+          }
+          return sum;
+        }, 0) || 0;
+
+        const weeklyProgressPercentage = weeklyTarget ? Math.min(100, (weeklyPoints / weeklyTarget) * 100) : 0;
+        const hasAchievedTarget = weeklyTarget && weeklyPoints >= weeklyTarget;
+
+        if (hasAchievedTarget) {
+          const badgeDescription = `Mencapai target mingguan ${weeklyTarget} ${targetUnit}`;
+          const badgeExists = student.badges?.some(b => b.date === today.toISOString().split('T')[0] && b.description === badgeDescription);
+          if (!badgeExists) {
+            student.badges = student.badges || [];
+            student.badges.push({
+              date: today.toISOString().split('T')[0],
+              description: badgeDescription
+            });
+            await saveStudent(childId, student);
+            await saveNotification({
+              userId: currentUser.uid,
+              studentId: childId,
+              text: `Tahniah! ${student.name} mendapat lencana untuk ${badgeDescription}!`,
+              date: today.toISOString().split('T')[0]
+            });
+            await saveActivityLog({
+              userId: currentUser.uid,
+              action: `Pelajar ${student.name} mendapat lencana untuk ${badgeDescription}`,
+              timestamp: new Date().toISOString()
+            });
+          }
+        }
+
+        const badgeCount = student.badges?.length || 0;
+        const hasRecentNotes = student.records?.some(record => record.notes && new Date(record.date) >= targetStartDate);
+
+        function formatDateToDDMMYY(dateInput) {
+          const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+          const day = String(date.getDate()).padStart(2, '0');
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const year = String(date.getFullYear()).slice(-2);
+          return `${day}-${month}-${year}`;
+        }
+
+        const badgesHtml = badgeCount > 0
+          ? `<div class="badges-list">Lencana Terkini: ${student.badges.slice(-3).map(b => `<span>🥇</span>`).join('')}${badgeCount > 3 ? `<span class="view-all-badges" onclick="document.getElementById('badgesTable').scrollIntoView()">Lihat Semua</span>` : ''}</div>`
+          : `<div class="badges-list">Tiada lencana lagi.</div>`;
+
+        const tracker = document.createElement('div');
+        tracker.className = 'progress-tracker';
+        tracker.innerHTML = `
+          <div class="child-name">${student.name}</div>
+          <div class="progress-container">
+            <span class="progress-label">${student.points}</span>
+            <div class="progress-bar">
+              <div class="progress" style="width: ${progressPercentage}%"></div>
+            </div>
+          </div>
+          <div class="rank-info">
+            <p>Jumlah Mata: ${student.points}</p>
+            <p>Pangkat: ${student.rank}</p>
+            ${weeklyTarget ? `
+              <div class="progress-container weekly-progress ${isDeadlineNear ? 'warning' : hasAchievedTarget ? 'achieved' : ''}">
+                <span class="progress-label">Kemajuan Mingguan: ${weeklyPoints}/${weeklyTarget} ${targetUnit} ${isNewCycle ? '(Kitaran Baru)' : ''}</span>
+                <div class="progress-bar">
+                  <div class="progress ${hasAchievedTarget ? 'blink' : ''}" style="width: ${weeklyProgressPercentage}%"></div>
+                </div>
+              </div>
+              <p><strong>Target Mingguan:</strong> ${weeklyTarget} ${targetUnit}</p>
+              <p class="target-period"><strong>Tempoh Target:</strong> ${formatDateToDDMMYY(targetStartDate)} hingga ${formatDateToDDMMYY(targetDeadline)}</p>
+            ` : '<p>Tiada target mingguan ditetapkan.</p>'}
+            ${badgesHtml}
+          </div>
+        `;
+        progressTrackers.appendChild(tracker);
+      }
+
+      const badgesList = document.getElementById('badgesList');
+      if (badgesList) {
+        badgesList.innerHTML = '';
+        for (const childId of currentUser.children) {
+          const student = await getStudent(childId);
+          if (!student || !student.badges) continue;
+          student.badges.forEach(badge => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${student.name}</td>
+              <td>${badge.date}</td>
+              <td>${badge.description}</td>
+            `;
+            badgesList.appendChild(row);
+          });
+        }
+      }
+
+      const recordsList = document.getElementById('recordsList');
+      if (recordsList) {
+        recordsList.innerHTML = '';
+        for (const childId of currentUser.children) {
+          const student = await getStudent(childId);
+          if (!student || !student.records) continue;
+          student.records.forEach(record => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${student.name}</td>
+              <td>${record.date}</td>
+              <td>${record.surah}</td>
+              <td>${record.fromAyat} - ${record.toAyat}</td>
+              <td>${record.level}</td>
+              <td>${record.points}</td>
+              <td>${record.notes || 'Tiada catatan'}</td>
+            `;
+            recordsList.appendChild(row);
+          });
+        }
+      }
+
+      const achievementStats = document.getElementById('achievementStats');
+      if (achievementStats) {
+        achievementStats.innerHTML = '';
+        for (const childId of currentUser.children) {
+          const student = await getStudent(childId);
+          if (!student) continue;
+          const badgeCount = student.badges?.length || 0;
+          const card = document.createElement('div');
+          card.className = 'stat-card achievement';
+          card.innerHTML = `
+            <h4>${student.name}</h4>
+            <p>${badgeCount} Lencana</p>
+          `;
+          achievementStats.appendChild(card);
+        }
+      }
+
+      await saveActivityLog({
+        userId: currentUser.uid,
+        action: 'Melihat kemajuan anak',
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Load Badges Ranking Table
+    async function loadBadgesRankingTable() {
+      const badgesRankingList = document.getElementById('badgesRankingList');
+      if (!badgesRankingList) {
+        console.warn('Elemen badgesRankingList tidak ditemui.');
+        return;
+      }
+
+      badgesRankingList.innerHTML = '';
+      const students = await getAllStudents();
+      const studentList = Object.entries(students)
+        .map(([id, student]) => ({
+          id,
+          name: student.name,
+          badgeCount: student.badges?.length || 0
+        }))
+        .sort((a, b) => b.badgeCount - a.badgeCount || a.name.localeCompare(b.name));
+
+      studentList.forEach((student, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${student.name}</td>
+          <td>${student.badgeCount}</td>
+        `;
+        badgesRankingList.appendChild(row);
+      });
+    }
+
+    // Load Teacher Dashboard
+    async function loadTeacherDashboard() {
+      const rankElements = {
+        Warrior: document.getElementById('rankWarrior'),
+        Elite: document.getElementById('rankElite'),
+        Master: document.getElementById('rankMaster'),
+        Grandmaster: document.getElementById('rankGrandmaster'),
+        Epic: document.getElementById('rankEpic'),
+        Legend: document.getElementById('rankLegend'),
+        Mythic: document.getElementById('rankMythic')
+      };
+
+      if (!Object.values(rankElements).every(el => el)) {
+        console.error('Ralat: Elemen pangkat tidak ditemui.');
+        return;
+      }
+
+      Object.values(rankElements).forEach(el => (el.textContent = '0'));
+
+      const rankCounts = {
+        Warrior: 0,
+        Elite: 0,
+        Master: 0,
+        Grandmaster: 0,
+        Epic: 0,
+        Legend: 0,
+        Mythic: 0
+      };
+
+      const students = await getAllStudents();
+      Object.values(students).forEach(student => {
+        if (rankCounts[student.rank] !== undefined) {
+          rankCounts[student.rank]++;
+        }
+      });
+
+      Object.keys(rankCounts).forEach(rank => {
+        rankElements[rank].textContent = rankCounts[rank];
+      });
+
+      updateTeacherStats();
+      loadTargetHistoryTable();
+      loadEditRecordsTable();
+      loadBadgesRankingTable();
+
+      await saveActivityLog({
+        userId: currentUser.uid,
+        action: 'Melihat papan pemuka guru',
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    // Update Teacher Stats
+    async function updateTeacherStats() {
+      const today = new Date().toISOString().split('T')[0];
+      let dailyCount = 0;
+      let weeklyAchievers = 0;
+
+      const students = await getAllStudents();
+      Object.values(students).forEach(student => {
+        const hasDailyRecord = student.records?.some(record => record.date === today);
+        if (hasDailyRecord) dailyCount++;
+
+        const weeklyTarget = parseInt(localStorage.getItem('weeklyTarget') || 0);
+        const targetDeadline = new Date(localStorage.getItem('targetDeadline'));
+        const startOfWeek = new Date(targetDeadline);
+        startOfWeek.setDate(targetDeadline.getDate() - 7);
+
+        const totalWeeklyPoints = student.records?.reduce((sum, record) => {
+          const recordDate = new Date(record.date);
+          if (recordDate >= startOfWeek && recordDate <= targetDeadline) {
+            return sum + record.points;
+          }
+          return sum;
+        }, 0) || 0;
+
+        if (totalWeeklyPoints >= weeklyTarget) {
+          weeklyAchievers++;
+        }
+      });
+
+      const dailyMemorizerElement = document.getElementById('dailyMemorizer');
+      const weeklyTargetAchieversElement = document.getElementById('weeklyTargetAchievers');
+      if (dailyMemorizerElement && weeklyTargetAchieversElement) {
+        dailyMemorizerElement.textContent = dailyCount;
+        weeklyTargetAchieversElement.textContent = weeklyAchievers;
+      }
+    }
+
+    // Set Weekly Target
+    async function setWeeklyTarget() {
+      const target = document.getElementById('weeklyTarget')?.value;
+      const unit = document.getElementById('targetUnit')?.value;
+      const startDate = document.getElementById('targetStartDate')?.value;
+      const deadline = document.getElementById('targetDeadline')?.value;
+
+      if (!target || !unit || !startDate || !deadline) {
+        alert('Sila isi semua medan.');
+        return;
+      }
+
+      const today = new Date().toISOString().split('T')[0];
+      if (new Date(startDate) > new Date(deadline)) {
+        alert('Tarikh mula tidak boleh melebihi tarikh akhir.');
+        return;
+      }
+
+      localStorage.setItem('weeklyTarget', target);
+      localStorage.setItem('targetUnit', unit);
+      localStorage.setItem('targetStartDate', startDate);
+      localStorage.setItem('targetDeadline', deadline);
+      localStorage.setItem('targetSetDate', today);
+
+      const targetHistory = await getTargetHistory();
+      const newTargetId = targetHistory.length ? Math.max(...targetHistory.map(t => t.id)) + 1 : 1;
+      await saveTargetHistory({
+        id: newTargetId,
+        target: parseInt(target),
+        unit,
+        startDate,
+        deadline,
+        setDate: today
+      });
+
+      const students = await getAllStudents();
+      for (const student of Object.values(students)) {
+        if (student.parentId) {
+          await saveNotification({
+            userId: student.parentId,
+            studentId: `student_${student.name.toLowerCase().replace(/\s+/g, '_')}`,
+            text: `Target mingguan baru ditetapkan: ${target} ${unit}, dari ${startDate} hingga ${deadline}`,
+            date: today
+          });
+        }
+      }
+
+      await saveActivityLog({
+        userId: currentUser.uid,
+        action: `Menetapkan target mingguan baru: ${target} ${unit}, dari ${startDate} hingga ${deadline}`,
+        timestamp: new Date().toISOString()
+      });
+
+      alert('Target mingguan ditetapkan!');
+      loadTeacherDashboard();
+      loadTargetHistoryTable();
+    }
+
+    // Load Evaluation Page
+    async function loadEvaluationPage() {
+      const studentSelect = document.getElementById('evalStudent');
+      const surahSelect = document.getElementById('evalSurah');
+      const evalDate = document.getElementById('evalDate');
+      if (!studentSelect || !surahSelect || !evalDate) return;
+
+      studentSelect.innerHTML = '<option value="">Pilih Pelajar</option>';
+      const students = await getAllStudents();
+      Object.entries(students).forEach(([id, student]) => {
+        const opt = document.createElement('option');
+        opt.value = id;
+        opt.textContent = student.name;
+        studentSelect.appendChild(opt);
+      });
+
+      const surahList = ['Al-Fatihah', 'An-Nas', 'Al-Falaq', 'Al-Ikhlas', 'Al-Lahab', 'An-Nasr'];
+      surahSelect.innerHTML = '<option value="">Pilih Surah</option>';
+      surahList.forEach(surah => {
+        const opt = document.createElement('option');
+        opt.value = surah;
+        opt.textContent = surah;
+        surahSelect.appendChild(opt);
+      });
+
+      evalDate.value = new Date().toISOString().split('T')[0];
+    }
+
+    // Calculate Points
+    function calculatePoints() {
+      const evalLevel = document.getElementById('evalLevel')?.value;
+      const evalPoints = document.getElementById('evalPoints');
+      if (!evalLevel || !evalPoints) return;
+
+      const points = { 3: 1, 5: 2, 7: 3, 9: 4, 11: 5, 13: 6, 15: 7 };
+      evalPoints.textContent = points[evalLevel] || 0;
+    }
+
+    // Submit Evaluation
+    async function submitEvaluation() {
+      const inputs = {
+        student: document.getElementById('evalStudent')?.value,
+        date: document.getElementById('evalDate')?.value,
+        surah: document.getElementById('evalSurah')?.value,
+        fromAyat: parseInt(document.getElementById('evalFromAyat')?.value) || 0,
+        toAyat: parseInt(document.getElementById('evalToAyat')?.value) || 0,
+        level: document.getElementById('evalLevel')?.value,
+        points: parseInt(document.getElementById('evalPoints')?.textContent) || 0,
+        notes: document.getElementById('evalNotes')?.value
+      };
+
+      if (!inputs.student || !inputs.date || !inputs.surah || !inputs.fromAyat || !inputs.toAyat) {
+        alert('Sila isi semua medan wajib.');
+        return;
+      }
+
+      const student = await getStudent(inputs.student);
+      student.records = student.records || [];
+      student.records.push({
+        date: inputs.date,
+        surah: inputs.surah,
+        fromAyat: inputs.fromAyat,
+        toAyat: inputs.toAyat,
+        level: inputs.level,
+        points: inputs.points,
+        notes: inputs.notes
+      });
+
+      student.points = (student.points || 0) + inputs.points;
+      student.rank = calculateRank(student.points);
+      await saveStudent(inputs.student, student);
+
+      const parentId = student.parentId;
+      if (parentId) {
+        await saveNotification({
+          userId: parentId,
+          studentId: inputs.student,
+          text: `${student.name} mencatat ${inputs.points} mata untuk hafazan ${inputs.surah} (${inputs.fromAyat}-${inputs.toAyat})`,
+          date: new Date().toISOString().split('T')[0]
+        });
+      }
+
+      alert('Rekod dihantar!');
+      document.getElementById('evalStudent').value = '';
+      document.getElementById('evalDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('evalSurah').value = '';
+      document.getElementById('evalFromAyat').value = '';
+      document.getElementById('evalToAyat').value = '';
+      document.getElementById('evalLevel').value = '3';
+      document.getElementById('evalPoints').textContent = '0';
+      document.getElementById('evalNotes').value = '';
+
       loadTeacherDashboard();
     }
-    showPage('profilePage');
-  };
 
-  // Show Page
-  window.showPage = function (pageId) {
-    document.querySelectorAll('div[id$="Page"]').forEach(page => {
-      page.classList.add('hidden');
-    });
-
-    const targetPage = document.getElementById(pageId);
-    if (targetPage) {
-      if (currentUser?.role === 'parent' && ['evaluationPage', 'adminPage'].includes(pageId)) {
-        alert('Akses ditolak. Ibu bapa hanya boleh melihat Carta Pendahulu dan Kemajuan Anak.');
-        return;
-      }
-      targetPage.classList.remove('hidden');
-    } else {
-      console.error(`Halaman dengan ID ${pageId} tidak ditemui.`);
+    // Calculate Rank
+    function calculateRank(points) {
+      if (points >= 421) return 'Mythic';
+      if (points >= 361) return 'Legend';
+      if (points >= 301) return 'Epic';
+      if (points >= 241) return 'Grandmaster';
+      if (points >= 181) return 'Master';
+      if (points >= 121) return 'Elite';
+      return 'Warrior';
     }
 
-    renderNavBar(pageId);
-
-    if (pageId === 'leaderboardPage') loadLeaderboard();
-    if (pageId === 'profilePage') {
-      if (currentUser?.role === 'parent') loadParentDashboard();
-      else loadTeacherDashboard();
-    }
-    if (pageId === 'evaluationPage') loadEvaluationPage();
-    if (pageId === 'adminPage') loadAdminPage();
-  };
-
-  // Render Navigation Bar
-  window.renderNavBar = function (activePage) {
-    document.querySelectorAll('.nav-bar').forEach(navBar => {
-      navBar.innerHTML = '';
-      if (!currentUser || activePage === 'loginPage') {
-        navBar.style.display = 'none';
-        return;
-      }
-
-      navBar.style.display = 'flex';
-      const pages = currentUser.role === 'parent' ? [
-        { icon: '🏆', pageId: 'leaderboardPage', title: 'Carta Pendahulu' },
-        { icon: '👤', pageId: 'profilePage', title: 'Kemajuan Anak' }
-      ] : [
-        { icon: '🏆', pageId: 'leaderboardPage', title: 'Carta Pendahulu' },
-        { icon: '+', pageId: 'evaluationPage', id: 'evalNav', title: 'Penilaian' },
-        { icon: '👤', pageId: 'profilePage', title: 'Papan Pemuka' },
-        { icon: '⚙️', pageId: 'adminPage', id: 'adminNav', title: 'Tetapan Admin' }
-      ];
-
-      pages.forEach(page => {
-        const btn = document.createElement('button');
-        btn.textContent = page.icon;
-        btn.title = page.title;
-        btn.onclick = () => showPage(page.pageId);
-        if (page.id) btn.id = page.id;
-        if (page.pageId === activePage) btn.classList.add('active');
-        if (currentUser.role === 'parent' && (page.id === 'evalNav' || page.id === 'adminNav')) {
-          btn.classList.add('hidden');
-        }
-        navBar.appendChild(btn);
-      });
-    });
-  };
-
-  // Load Leaderboard
-  window.loadLeaderboard = async function () {
-    const rankFilter = document.getElementById('rankFilterLeaderboard')?.value || '';
-    const list = document.getElementById('leaderboardList');
-    if (!list) return;
-
-    list.innerHTML = '';
-    const students = await getAllStudents();
-    let studentList = Object.values(students);
-    if (rankFilter) studentList = studentList.filter(s => s.rank === rankFilter);
-    studentList.sort((a, b) => b.points - a.points);
-
-    studentList.forEach((student, index) => {
-      const div = document.createElement('div');
-      div.className = 'list-item';
-      div.textContent = `${index + 1}. ${student.name} - ${student.points} mata - ${student.rank}`;
-      list.appendChild(div);
-    });
-  };
-
-  // Load Parent Dashboard
-  window.loadParentDashboard = async function () {
-    const progressTrackers = document.getElementById('progressTrackers');
-    const notificationList = document.getElementById('notificationList');
-    if (!progressTrackers || !notificationList || !currentUser?.children) return;
-
-    // Load notifications
-    listenForNotificationUpdates(currentUser.uid, (notifications) => {
-      notificationList.innerHTML = '';
-      notifications
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
-        .forEach(n => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${n.date}</td>
-            <td>${n.text}</td>
-          `;
-          notificationList.appendChild(tr);
-        });
-    });
-
-    progressTrackers.innerHTML = '';
-    const weeklyTarget = parseInt(localStorage.getItem('weeklyTarget') || 0);
-    const targetUnit = localStorage.getItem('targetUnit') || 'ayat';
-    const targetStartDate = new Date(localStorage.getItem('targetStartDate') || new Date());
-    const targetDeadline = new Date(localStorage.getItem('targetDeadline') || new Date());
-    const targetSetDate = new Date(localStorage.getItem('targetSetDate') || new Date());
-
-    const today = new Date();
-    const daysUntilDeadline = Math.ceil((targetDeadline - today) / (1000 * 60 * 60 * 24));
-    const isDeadlineNear = daysUntilDeadline <= 2 && daysUntilDeadline >= 0;
-    const isNewCycle = today.toISOString().split('T')[0] === targetSetDate.toISOString().split('T')[0];
-    const isTargetActive = today >= targetStartDate && today <= targetDeadline;
-
-    for (const childId of currentUser.children) {
-      const student = await getStudent(childId);
-      if (!student) continue;
-
-      const rankPoints = {
-        Warrior: [0, 120],
-        Elite: [121, 180],
-        Master: [181, 240],
-        Grandmaster: [241, 300],
-        Epic: [301, 360],
-        Legend: [361, 420],
-        Mythic: [421, 480]
+    // Load Admin Page
+    async function loadAdminPage() {
+      const elements = {
+        deleteStudentList: document.getElementById('deleteStudentList'),
+        deleteTeacherList: document.getElementById('deleteTeacherList'),
+        deleteParentList: document.getElementById('deleteParentList'),
+        userIdSelect: document.getElementById('userIdSelect')
       };
-      const [min, max] = rankPoints[student.rank] || [0, 120];
-      const progressPercentage = Math.min(100, Math.max(0, ((student.points - min) / (max - min)) * 100));
+      if (!Object.values(elements).every(el => el)) return;
 
-      const weeklyPoints = student.records?.reduce((sum, record) => {
-        const recordDate = new Date(record.date);
-        if (
-          recordDate >= targetSetDate &&
-          recordDate >= targetStartDate &&
-          recordDate <= targetDeadline
-        ) {
-          return sum + record.points;
+      elements.deleteStudentList.innerHTML = '';
+      const students = await getAllStudents();
+      Object.entries(students).forEach(([id, student]) => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.innerHTML = `${student.name} - ${student.parentId} <button class="button red" data-student-id="${id}">Hapus</button>`;
+        elements.deleteStudentList.appendChild(div);
+      });
+
+      elements.deleteTeacherList.innerHTML = '';
+      const users = await getAllUsers();
+      Object.entries(users).forEach(([id, user]) => {
+        if (user.role === 'teacher' && id !== currentUser.uid) {
+          const div = document.createElement('div');
+          div.className = 'list-item';
+          div.innerHTML = `${id} <button class="button red" data-teacher-id="${id}">Hapus</button>`;
+          elements.deleteTeacherList.appendChild(div);
         }
-        return sum;
-      }, 0) || 0;
+      });
 
-      const weeklyProgressPercentage = weeklyTarget ? Math.min(100, (weeklyPoints / weeklyTarget) * 100) : 0;
-      const hasAchievedTarget = weeklyTarget && weeklyPoints >= weeklyTarget;
-
-      if (hasAchievedTarget) {
-        const badgeDescription = `Mencapai target mingguan ${weeklyTarget} ${targetUnit}`;
-        const badgeExists = student.badges?.some(b => b.date === today.toISOString().split('T')[0] && b.description === badgeDescription);
-        if (!badgeExists) {
-          student.badges = student.badges || [];
-          student.badges.push({
-            date: today.toISOString().split('T')[0],
-            description: badgeDescription
-          });
-          await saveStudent(childId, student);
-          await saveNotification({
-            userId: currentUser.uid,
-            studentId: childId,
-            text: `Tahniah! ${student.name} mendapat lencana untuk ${badgeDescription}!`,
-            date: today.toISOString().split('T')[0]
-          });
-          await saveActivityLog({
-            userId: currentUser.uid,
-            action: `Pelajar ${student.name} mendapat lencana untuk ${badgeDescription}`,
-            timestamp: new Date().toISOString()
-          });
+      elements.deleteParentList.innerHTML = '';
+      Object.entries(users).forEach(([id, user]) => {
+        if (user.role === 'parent') {
+          const div = document.createElement('div');
+          div.className = 'list-item';
+          div.innerHTML = `${id} <button class="button red" data-parent-id="${id}">Hapus</button>`;
+          elements.deleteParentList.appendChild(div);
         }
-      }
+      });
 
-      const badgeCount = student.badges?.length || 0;
-      const hasRecentNotes = student.records?.some(record => record.notes && new Date(record.date) >= targetStartDate);
+      elements.userIdSelect.innerHTML = '';
+      Object.entries(users).forEach(([id, user]) => {
+        const opt = document.createElement('option');
+        opt.value = id;
+        opt.textContent = `${id} (${user.role})`;
+        elements.userIdSelect.appendChild(opt);
+      });
 
-      function formatDateToDDMMYY(dateInput) {
-        const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = String(date.getFullYear()).slice(-2);
-        return `${day}-${month}-${year}`;
-      }
-
-      const badgesHtml = badgeCount > 0
-        ? `<div class="badges-list">Lencana Terkini: ${student.badges.slice(-3).map(b => `<span>🥇</span>`).join('')}${badgeCount > 3 ? `<span class="view-all-badges" onclick="document.getElementById('badgesTable').scrollIntoView()">Lihat Semua</span>` : ''}</div>`
-        : `<div class="badges-list">Tiada lencana lagi.</div>`;
-
-      const tracker = document.createElement('div');
-      tracker.className = 'progress-tracker';
-      tracker.innerHTML = `
-        <div class="child-name">${student.name}</div>
-        <div class="progress-container">
-          <span class="progress-label">${student.points}</span>
-          <div class="progress-bar">
-            <div class="progress" style="width: ${progressPercentage}%"></div>
-          </div>
-        </div>
-        <div class="rank-info">
-          <p>Jumlah Mata: ${student.points}</p>
-          <p>Pangkat: ${student.rank}</p>
-          ${weeklyTarget ? `
-            <div class="progress-container weekly-progress ${isDeadlineNear ? 'warning' : hasAchievedTarget ? 'achieved' : ''}">
-              <span class="progress-label">Kemajuan Mingguan: ${weeklyPoints}/${weeklyTarget} ${targetUnit} ${isNewCycle ? '(Kitaran Baru)' : ''}</span>
-              <div class="progress-bar">
-                <div class="progress ${hasAchievedTarget ? 'blink' : ''}" style="width: ${weeklyProgressPercentage}%"></div>
-              </div>
-            </div>
-            <p><strong>Target Mingguan:</strong> ${weeklyTarget} ${targetUnit}</p>
-            <p class="target-period"><strong>Tempoh Target:</strong> ${formatDateToDDMMYY(targetStartDate)} hingga ${formatDateToDDMMYY(targetDeadline)}</p>
-          ` : '<p>Tiada target mingguan ditetapkan.</p>'}
-          ${badgesHtml}
-        </div>
-      `;
-      progressTrackers.appendChild(tracker);
+      const form = document.getElementById('addStudentParentForm');
+      if (form) form.reset();
+      ['studentNameError', 'parentIdError', 'parentPasswordError'].forEach(id => {
+        const errorDiv = document.getElementById(id);
+        if (errorDiv) {
+          errorDiv.style.display = 'none';
+          errorDiv.textContent = '';
+        }
+      });
     }
 
-    const badgesList = document.getElementById('badgesList');
-    if (badgesList) {
-      badgesList.innerHTML = '';
-      for (const childId of currentUser.children) {
-        const student = await getStudent(childId);
-        if (!student || !student.badges) continue;
-        student.badges.forEach(badge => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${student.name}</td>
-            <td>${badge.date}</td>
-            <td>${badge.description}</td>
-          `;
-          badgesList.appendChild(row);
+    // Add Student and Parent
+    async function addStudentAndParent(event) {
+      event.preventDefault();
+      const studentName = document.getElementById('studentName')?.value.trim();
+      const parentId = document.getElementById('parentId')?.value.trim();
+      const parentPassword = document.getElementById('parentPassword')?.value.trim();
+
+      ['studentNameError', 'parentIdError', 'parentPasswordError'].forEach(id => {
+        const errorDiv = document.getElementById(id);
+        if (errorDiv) {
+          errorDiv.style.display = 'none';
+          errorDiv.textContent = '';
+        }
+      });
+
+      let isValid = true;
+
+      if (!studentName) {
+        document.getElementById('studentNameError').textContent = 'Nama pelajar diperlukan.';
+        document.getElementById('studentNameError').style.display = 'block';
+        isValid = false;
+      }
+
+      if (!parentId) {
+        document.getElementById('parentIdError').textContent = 'ID ibu bapa diperlukan.';
+        document.getElementById('parentIdError').style.display = 'block';
+        isValid = false;
+      } else if (!/^[a-zA-Z0-9_]+$/.test(parentId)) {
+        document.getElementById('parentIdError').textContent = 'ID ibu bapa hanya boleh mengandungi huruf, nombor, dan garis bawah.';
+        document.getElementById('parentIdError').style.display = 'block';
+        isValid = false;
+      }
+
+      const existingParent = await getUser(parentId);
+      if (!existingParent && !parentPassword) {
+        document.getElementById('parentPasswordError').textContent = 'Kata laluan diperlukan untuk ibu bapa baru.';
+        document.getElementById('parentPasswordError').style.display = 'block';
+        isValid = false;
+      } else if (parentPassword && parentPassword.length < 6) {
+        document.getElementById('parentPasswordError').textContent = 'Kata laluan mestilah sekurang-kurangnya 6 aksara.';
+        document.getElementById('parentPasswordError').style.display = 'block';
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      const studentId = `student_${studentName.toLowerCase().replace(/\s+/g, '_')}`;
+     
+      // Semak jika pelajar sudah wujud
+      const existingStudent = await getStudent(studentId);
+      if (existingStudent) {
+        document.getElementById('studentNameError').textContent = 'Pelajar dengan nama ini sudah wujud.';
+        document.getElementById('studentNameError').style.display = 'block';
+        return;
+      }
+
+      // Simpan data ibu bapa (jika baru)
+      if (!existingParent && parentPassword) {
+        await saveUser(parentId, {
+          role: 'parent',
+          password: parentPassword,
+          children: [studentId]
         });
+      } else if (existingParent && existingParent.role === 'parent') {
+        // Tambah pelajar ke senarai anak ibu bapa sedia ada
+        existingParent.children = existingParent.children || [];
+        if (!existingParent.children.includes(studentId)) {
+          existingParent.children.push(studentId);
+          await saveUser(parentId, existingParent);
+        }
+      } else {
+        document.getElementById('parentIdError').textContent = 'ID ini bukan milik ibu bapa.';
+        document.getElementById('parentIdError').style.display = 'block';
+        return;
       }
+
+      // Simpan data pelajar
+      await saveStudent(studentId, {
+        name: studentName,
+        parentId: parentId,
+        points: 0,
+        rank: 'Warrior',
+        records: [],
+        badges: []
+      });
+
+      // Log aktiviti
+      await saveActivityLog({
+        userId: currentUser.uid,
+        action: `Menambah pelajar ${studentName} dengan ID ibu bapa ${parentId}`,
+        timestamp: new Date().toISOString()
+      });
+
+      alert('Pelajar dan ibu bapa berjaya ditambah!');
+      document.getElementById('addStudentParentForm').reset();
+      loadAdminPage();
     }
 
-    const recordsList = document.getElementById('recordsList');
-    if (recordsList) {
-      recordsList.innerHTML = '';
-      for (const childId of currentUser.children) {
-        const student = await getStudent(childId);
-        if (!student || !student.records) continue;
-        student.records.forEach(record => {
+    // Tambah Guru
+    async function addTeacher() {
+      const teacherId = document.getElementById('addTeacherId')?.value.trim();
+      const teacherPassword = document.getElementById('addTeacherPassword')?.value.trim();
+
+      if (!teacherId || !teacherPassword) {
+        alert('Sila isi ID dan kata laluan guru.');
+        return;
+      }
+
+      if (!/^[a-zA-Z0-9_]+$/.test(teacherId)) {
+        alert('ID guru hanya boleh mengandungi huruf, nombor, dan garis bawah.');
+        return;
+      }
+
+      if (teacherPassword.length < 6) {
+        alert('Kata laluan mestilah sekurang-kurangnya 6 aksara.');
+        return;
+      }
+
+      const existingUser = await getUser(teacherId);
+      if (existingUser) {
+        alert('ID guru ini sudah wujud.');
+        return;
+      }
+
+      await saveUser(teacherId, {
+        role: 'teacher',
+        password: teacherPassword
+      });
+
+      await saveActivityLog({
+        userId: currentUser.uid,
+        action: `Menambah guru dengan ID ${teacherId}`,
+        timestamp: new Date().toISOString()
+      });
+
+      alert('Guru berjaya ditambah!');
+      document.getElementById('addTeacherId').value = '';
+      document.getElementById('addTeacherPassword').value = '';
+      loadAdminPage();
+    }
+
+    // Hapus Pelajar
+    async function deleteStudentHandler(event) {
+      const studentId = event.target.dataset.studentId;
+      if (!studentId) return;
+
+      if (!confirm('Adakah anda pasti ingin memadam pelajar ini?')) return;
+
+      const student = await getStudent(studentId);
+      if (!student) return;
+
+      const parentId = student.parentId;
+      if (parentId) {
+        const parent = await getUser(parentId);
+        if (parent && parent.children) {
+          parent.children = parent.children.filter(id => id !== studentId);
+          await saveUser(parentId, parent);
+        }
+      }
+
+      await deleteStudent(studentId);
+
+      await saveActivityLog({
+        userId: currentUser.uid,
+        action: `Memadam pelajar ${student.name}`,
+        timestamp: new Date().toISOString()
+      });
+
+      alert('Pelajar berjaya dipadam!');
+      loadAdminPage();
+    }
+
+    // Hapus Guru
+    async function deleteTeacherHandler(event) {
+      const teacherId = event.target.dataset.teacherId;
+      if (!teacherId) return;
+
+      if (!confirm('Adakah anda pasti ingin memadam guru ini?')) return;
+
+      await deleteUser(teacherId);
+
+      await saveActivityLog({
+        userId: currentUser.uid,
+        action: `Memadam guru dengan ID ${teacherId}`,
+        timestamp: new Date().toISOString()
+      });
+
+      alert('Guru berjaya dipadam!');
+      loadAdminPage();
+    }
+
+    // Hapus Ibu Bapa
+    async function deleteParentHandler(event) {
+      const parentId = event.target.dataset.parentId;
+      if (!parentId) return;
+
+      if (!confirm('Adakah anda pasti ingin memadam ibu bapa ini? Semua pelajar berkaitan juga akan dipadam.')) return;
+
+      const parent = await getUser(parentId);
+      if (parent && parent.children) {
+        for (const studentId of parent.children) {
+          await deleteStudent(studentId);
+        }
+      }
+
+      await deleteUser(parentId);
+
+      await saveActivityLog({
+        userId: currentUser.uid,
+        action: `Memadam ibu bapa dengan ID ${parentId}`,
+        timestamp: new Date().toISOString()
+      });
+
+      alert('Ibu bapa dan pelajar berkaitan berjaya dipadam!');
+      loadAdminPage();
+    }
+
+    // Kemas Kini Kata Laluan
+    async function updatePassword() {
+      const userId = document.getElementById('userIdSelect')?.value;
+      const newPassword = document.getElementById('newPassword')?.value.trim();
+
+      if (!userId || !newPassword) {
+        alert('Sila pilih ID pengguna dan masukkan kata laluan baru.');
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        alert('Kata laluan baru mestilah sekurang-kurangnya 6 aksara.');
+        return;
+      }
+
+      const user = await getUser(userId);
+      if (!user) {
+        alert('Pengguna tidak wujud.');
+        return;
+      }
+
+      user.password = newPassword;
+      await saveUser(userId, user);
+
+      await saveActivityLog({
+        userId: currentUser.uid,
+        action: `Mengemas kini kata laluan untuk pengguna ${userId}`,
+        timestamp: new Date().toISOString()
+      });
+
+      alert('Kata laluan berjaya dikemas kini!');
+      document.getElementById('newPassword').value = '';
+      loadAdminPage();
+    }
+
+    // Muat Naik Data Pelajar melalui Excel
+    async function uploadStudents() {
+      const fileInput = document.getElementById('studentFile');
+      if (!fileInput?.files?.length) {
+        alert('Sila pilih fail Excel.');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(sheet);
+
+          for (const row of rows) {
+            const studentName = row['Nama Pelajar']?.trim();
+            const parentId = row['Nama Ibu Bapa']?.trim();
+            const parentPassword = row['Kata Laluan']?.trim();
+
+            if (!studentName || !parentId) {
+              console.warn(`Data tidak lengkap untuk baris: ${JSON.stringify(row)}`);
+              continue;
+            }
+
+            const studentId = `student_${studentName.toLowerCase().replace(/\s+/g, '_')}`;
+            const existingStudent = await getStudent(studentId);
+            if (existingStudent) {
+              console.warn(`Pelajar ${studentName} sudah wujud.`);
+              continue;
+            }
+
+            let parent = await getUser(parentId);
+            if (!parent && parentPassword) {
+              await saveUser(parentId, {
+                role: 'parent',
+                password: parentPassword,
+                children: [studentId]
+              });
+            } else if (parent && parent.role === 'parent') {
+              parent.children = parent.children || [];
+              if (!parent.children.includes(studentId)) {
+                parent.children.push(studentId);
+                await saveUser(parentId, parent);
+              }
+            } else {
+              console.warn(`ID ibu bapa ${parentId} tidak sah atau bukan ibu bapa.`);
+              continue;
+            }
+
+            await saveStudent(studentId, {
+              name: studentName,
+              parentId: parentId,
+              points: 0,
+              rank: 'Warrior',
+              records: [],
+              badges: []
+            });
+
+            await saveActivityLog({
+              userId: currentUser.uid,
+              action: `Memuat naik pelajar ${studentName} dengan ID ibu bapa ${parentId}`,
+              timestamp: new Date().toISOString()
+            });
+          }
+
+          alert('Data pelajar berjaya dimuat naik!');
+          fileInput.value = '';
+          loadAdminPage();
+        } catch (error) {
+          console.error('Ralat memuat naik fail Excel:', error);
+          alert('Ralat memuat naik fail. Sila pastikan format fail betul.');
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // Load Sejarah Tetapan Target
+    async function loadTargetHistoryTable() {
+      const targetHistoryList = document.getElementById('targetHistoryList');
+      if (!targetHistoryList) return;
+
+      targetHistoryList.innerHTML = '';
+      const targetHistory = await getTargetHistory();
+      targetHistory.sort((a, b) => new Date(b.setDate) - new Date(a.setDate)).forEach(target => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${target.id}</td>
+          <td>${target.target}</td>
+          <td>${target.unit}</td>
+          <td>${target.startDate}</td>
+          <td>${target.deadline}</td>
+          <td>${target.setDate}</td>
+          <td>
+            <button class="edit-button" data-target-id="${target.id}">Edit</button>
+          </td>
+        `;
+        targetHistoryList.appendChild(row);
+      });
+    }
+
+    // Load Sejarah Rekod Hafazan
+    async function loadEditRecordsTable() {
+      const editRecordsList = document.getElementById('editRecordsList');
+      if (!editRecordsList) return;
+
+      editRecordsList.innerHTML = '';
+      const students = await getAllStudents();
+      Object.values(students).forEach(student => {
+        if (!student.records) return;
+        student.records.forEach((record, index) => {
           const row = document.createElement('tr');
           row.innerHTML = `
             <td>${student.name}</td>
@@ -1391,848 +2149,153 @@ document.addEventListener('DOMContentLoaded', () => {
             <td>${record.fromAyat} - ${record.toAyat}</td>
             <td>${record.level}</td>
             <td>${record.points}</td>
-            <td>${record.notes || 'Tiada catatan'}</td>
+            <td>${record.notes || 'Tiada'}</td>
+            <td>
+              <button class="edit-button" data-student-id="${student.id}" data-record-index="${index}">Edit</button>
+            </td>
           `;
-          recordsList.appendChild(row);
+          editRecordsList.appendChild(row);
         });
-      }
-    }
-
-    const achievementStats = document.getElementById('achievementStats');
-    if (achievementStats) {
-      achievementStats.innerHTML = '';
-      for (const childId of currentUser.children) {
-        const student = await getStudent(childId);
-        if (!student) continue;
-        const badgeCount = student.badges?.length || 0;
-        const card = document.createElement('div');
-        card.className = 'stat-card achievement';
-        card.innerHTML = `
-          <h4>${student.name}</h4>
-          <p>${badgeCount} Lencana</p>
-        `;
-        achievementStats.appendChild(card);
-      }
-    }
-
-    await saveActivityLog({
-      userId: currentUser.uid,
-      action: 'Melihat kemajuan anak',
-      timestamp: new Date().toISOString()
-    });
-  };
-
-  // Load Badges Ranking Table
-  window.loadBadgesRankingTable = async function () {
-    const badgesRankingList = document.getElementById('badgesRankingList');
-    if (!badgesRankingList) {
-      console.warn('Elemen badgesRankingList tidak ditemui.');
-      return;
-    }
-
-    badgesRankingList.innerHTML = '';
-    const students = await getAllStudents();
-    const studentList = Object.entries(students)
-      .map(([id, student]) => ({
-        id,
-        name: student.name,
-        badgeCount: student.badges?.length || 0
-      }))
-      .sort((a, b) => b.badgeCount - a.badgeCount || a.name.localeCompare(b.name));
-
-    studentList.forEach((student, index) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${index + 1}</td>
-        <td>${student.name}</td>
-        <td>${student.badgeCount}</td>
-      `;
-      badgesRankingList.appendChild(row);
-    });
-  };
-
-  // Load Teacher Dashboard
-  window.loadTeacherDashboard = async function () {
-    const rankElements = {
-      Warrior: document.getElementById('rankWarrior'),
-      Elite: document.getElementById('rankElite'),
-      Master: document.getElementById('rankMaster'),
-      Grandmaster: document.getElementById('rankGrandmaster'),
-      Epic: document.getElementById('rankEpic'),
-      Legend: document.getElementById('rankLegend'),
-      Mythic: document.getElementById('rankMythic')
-    };
-
-    if (!Object.values(rankElements).every(el => el)) {
-      console.error('Ralat: Elemen pangkat tidak ditemui.');
-      return;
-    }
-
-    Object.values(rankElements).forEach(el => (el.textContent = '0'));
-
-    const rankCounts = {
-      Warrior: 0,
-      Elite: 0,
-      Master: 0,
-      Grandmaster: 0,
-      Epic: 0,
-      Legend: 0,
-      Mythic: 0
-    };
-
-    const students = await getAllStudents();
-    Object.values(students).forEach(student => {
-      if (rankCounts[student.rank] !== undefined) {
-        rankCounts[student.rank]++;
-      }
-    });
-
-    Object.keys(rankCounts).forEach(rank => {
-      rankElements[rank].textContent = rankCounts[rank];
-    });
-
-    updateTeacherStats();
-    loadTargetHistoryTable();
-    loadEditRecordsTable();
-    loadBadgesRankingTable();
-
-    await saveActivityLog({
-      userId: currentUser.uid,
-      action: 'Melihat papan pemuka guru',
-      timestamp: new Date().toISOString()
-    });
-  };
-
-  // Update Teacher Stats
-  window.updateTeacherStats = async function () {
-    const today = new Date().toISOString().split('T')[0];
-    let dailyCount = 0;
-    let weeklyAchievers = 0;
-
-    const students = await getAllStudents();
-    Object.values(students).forEach(student => {
-      const hasDailyRecord = student.records?.some(record => record.date === today);
-      if (hasDailyRecord) dailyCount++;
-
-      const weeklyTarget = parseInt(localStorage.getItem('weeklyTarget') || 0);
-      const targetDeadline = new Date(localStorage.getItem('targetDeadline'));
-      const startOfWeek = new Date(targetDeadline);
-      startOfWeek.setDate(targetDeadline.getDate() - 7);
-
-      const totalWeeklyPoints = student.records?.reduce((sum, record) => {
-        const recordDate = new Date(record.date);
-        if (recordDate >= startOfWeek && recordDate <= targetDeadline) {
-          return sum + record.points;
-        }
-        return sum;
-      }, 0) || 0;
-
-      if (totalWeeklyPoints >= weeklyTarget) {
-        weeklyAchievers++;
-      }
-    });
-
-    const dailyMemorizerElement = document.getElementById('dailyMemorizer');
-    const weeklyTargetAchieversElement = document.getElementById('weeklyTargetAchievers');
-    if (dailyMemorizerElement && weeklyTargetAchieversElement) {
-      dailyMemorizerElement.textContent = dailyCount;
-      weeklyTargetAchieversElement.textContent = weeklyAchievers;
-    }
-  };
-
-  // Set Weekly Target
-  window.setWeeklyTarget = async function () {
-    const target = document.getElementById('weeklyTarget')?.value;
-    const unit = document.getElementById('targetUnit')?.value;
-    const startDate = document.getElementById('targetStartDate')?.value;
-    const deadline = document.getElementById('targetDeadline')?.value;
-
-    if (!target || !unit || !startDate || !deadline) {
-      alert('Sila isi semua medan.');
-      return;
-    }
-
-    const today = new Date().toISOString().split('T')[0];
-    if (new Date(startDate) > new Date(deadline)) {
-      alert('Tarikh mula tidak boleh melebihi tarikh akhir.');
-      return;
-    }
-
-    localStorage.setItem('weeklyTarget', target);
-    localStorage.setItem('targetUnit', unit);
-    localStorage.setItem('targetStartDate', startDate);
-    localStorage.setItem('targetDeadline', deadline);
-    localStorage.setItem('targetSetDate', today);
-
-    const targetHistory = await getTargetHistory();
-    const newTargetId = targetHistory.length ? Math.max(...targetHistory.map(t => t.id)) + 1 : 1;
-    await saveTargetHistory({
-      id: newTargetId,
-      target: parseInt(target),
-      unit,
-      startDate,
-      deadline,
-      setDate: today
-    });
-
-    const students = await getAllStudents();
-    for (const student of Object.values(students)) {
-      if (student.parentId) {
-        await saveNotification({
-          userId: student.parentId,
-          studentId: `student_${student.name.toLowerCase().replace(/\s+/g, '_')}`,
-          text: `Target mingguan baru ditetapkan: ${target} ${unit}, dari ${startDate} hingga ${deadline}`,
-          date: today
-        });
-      }
-    }
-
-    await saveActivityLog({
-      userId: currentUser.uid,
-      action: `Menetapkan target mingguan baru: ${target} ${unit}, dari ${startDate} hingga ${deadline}`,
-      timestamp: new Date().toISOString()
-    });
-
-    alert('Target mingguan ditetapkan!');
-    loadTeacherDashboard();
-    loadTargetHistoryTable();
-  };
-
-  // Load Evaluation Page
-  window.loadEvaluationPage = async function () {
-    const studentSelect = document.getElementById('evalStudent');
-    const surahSelect = document.getElementById('evalSurah');
-    const evalDate = document.getElementById('evalDate');
-    if (!studentSelect || !surahSelect || !evalDate) return;
-
-    studentSelect.innerHTML = '<option value="">Pilih Pelajar</option>';
-    const students = await getAllStudents();
-    Object.entries(students).forEach(([id, student]) => {
-      const opt = document.createElement('option');
-      opt.value = id;
-      opt.textContent = student.name;
-      studentSelect.appendChild(opt);
-    });
-
-    const surahList = ['Al-Fatihah', 'An-Nas', 'Al-Falaq', 'Al-Ikhlas', 'Al-Lahab', 'An-Nasr'];
-    surahSelect.innerHTML = '<option value="">Pilih Surah</option>';
-    surahList.forEach(surah => {
-      const opt = document.createElement('option');
-      opt.value = surah;
-      opt.textContent = surah;
-      surahSelect.appendChild(opt);
-    });
-
-    evalDate.value = new Date().toISOString().split('T')[0];
-  };
-
-  // Calculate Points
-  window.calculatePoints = function () {
-    const evalLevel = document.getElementById('evalLevel')?.value;
-    const evalPoints = document.getElementById('evalPoints');
-    if (!evalLevel || !evalPoints) return;
-
-    const points = { 3: 1, 5: 2, 7: 3, 9: 4, 11: 5, 13: 6, 15: 7 };
-    evalPoints.textContent = points[evalLevel] || 0;
-  };
-
-  // Submit Evaluation
-  window.submitEvaluation = async function () {
-    const inputs = {
-      student: document.getElementById('evalStudent')?.value,
-      date: document.getElementById('evalDate')?.value,
-      surah: document.getElementById('evalSurah')?.value,
-      fromAyat: parseInt(document.getElementById('evalFromAyat')?.value) || 0,
-      toAyat: parseInt(document.getElementById('evalToAyat')?.value) || 0,
-      level: document.getElementById('evalLevel')?.value,
-      points: parseInt(document.getElementById('evalPoints')?.textContent) || 0,
-      notes: document.getElementById('evalNotes')?.value
-    };
-
-    if (!inputs.student || !inputs.date || !inputs.surah || !inputs.fromAyat || !inputs.toAyat) {
-      alert('Sila isi semua medan wajib.');
-      return;
-    }
-
-    const student = await getStudent(inputs.student);
-    student.records = student.records || [];
-    student.records.push({
-      date: inputs.date,
-      surah: inputs.surah,
-      fromAyat: inputs.fromAyat,
-      toAyat: inputs.toAyat,
-      level: inputs.level,
-      points: inputs.points,
-      notes: inputs.notes
-    });
-
-    student.points = (student.points || 0) + inputs.points;
-    student.rank = calculateRank(student.points);
-    await saveStudent(inputs.student, student);
-
-    const parentId = student.parentId;
-    if (parentId) {
-      await saveNotification({
-        userId: parentId,
-        studentId: inputs.student,
-        text: `${student.name} mencatat ${inputs.points} mata untuk hafazan ${inputs.surah} (${inputs.fromAyat}-${inputs.toAyat})`,
-        date: new Date().toISOString().split('T')[0]
       });
     }
 
-    alert('Rekod dihantar!');
-    document.getElementById('evalStudent').value = '';
-    document.getElementById('evalDate').value = new Date().toISOString().split('T')[0];
-    document.getElementById('evalSurah').value = '';
-    document.getElementById('evalFromAyat').value = '';
-    document.getElementById('evalToAyat').value = '';
-    document.getElementById('evalLevel').value = '3';
-    document.getElementById('evalPoints').textContent = '0';
-    document.getElementById('evalNotes').value = '';
+    // Edit Rekod Hafazan
+    async function editRecordHandler(event) {
+      const studentId = event.target.dataset.studentId;
+      const recordIndex = parseInt(event.target.dataset.recordIndex);
+      if (!studentId || isNaN(recordIndex)) return;
 
-    loadTeacherDashboard();
-  };
+      const student = await getStudent(studentId);
+      if (!student || !student.records[recordIndex]) return;
 
-  // Calculate Rank
-  window.calculateRank = function (points) {
-    if (points >= 421) return 'Mythic';
-    if (points >= 361) return 'Legend';
-    if (points >= 301) return 'Epic';
-    if (points >= 241) return 'Grandmaster';
-    if (points >= 181) return 'Master';
-    if (points >= 121) return 'Elite';
-    return 'Warrior';
-  };
+      const record = student.records[recordIndex];
+      const newDate = prompt('Masukkan tarikh baru (YYYY-MM-DD):', record.date);
+      const newSurah = prompt('Masukkan surah baru:', record.surah);
+      const newFromAyat = prompt('Masukkan ayat mula baru:', record.fromAyat);
+      const newToAyat = prompt('Masukkan ayat akhir baru:', record.toAyat);
+      const newLevel = prompt('Masukkan tahap bacaan baru (3, 5, 7, dll.):', record.level);
+      const newNotes = prompt('Masukkan catatan baru:', record.notes || '');
 
-  // Load Admin Page
-  window.loadAdminPage = async function () {
-    const elements = {
-      deleteStudentList: document.getElementById('deleteStudentList'),
-      deleteTeacherList: document.getElementById('deleteTeacherList'),
-      deleteParentList: document.getElementById('deleteParentList'),
-      userIdSelect: document.getElementById('userIdSelect')
-    };
-    if (!Object.values(elements).every(el => el)) return;
+      if (newDate && newSurah && newFromAyat && newToAyat && newLevel) {
+        const points = { 3: 1, 5: 2, 7: 3, 9: 4, 11: 5, 13: 6, 15: 7 }[parseInt(newLevel)] || 0;
+        student.records[recordIndex] = {
+          date: newDate,
+          surah: newSurah,
+          fromAyat: parseInt(newFromAyat),
+          toAyat: parseInt(newToAyat),
+          level: newLevel,
+          points: points,
+          notes: newNotes
+        };
 
-    elements.deleteStudentList.innerHTML = '';
-    const students = await getAllStudents();
-    Object.entries(students).forEach(([id, student]) => {
-      const div = document.createElement('div');
-      div.className = 'list-item';
-      div.innerHTML = `${student.name} - ${student.parentId} <button class="button red" onclick="deleteStudent('${id}')">Hapus</button>`;
-      elements.deleteStudentList.appendChild(div);
-    });
+        // Kemas kini mata pelajar
+        student.points = student.records.reduce((sum, r) => sum + r.points, 0);
+        student.rank = calculateRank(student.points);
+        await saveStudent(studentId, student);
 
-    elements.deleteTeacherList.innerHTML = '';
-    const users = await getAllUsers();
-    Object.entries(users).forEach(([id, user]) => {
-      if (user.role === 'teacher' && id !== currentUser.uid) {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `${id} <button class="button red" onclick="deleteTeacher('${id}')">Hapus</button>`;
-        elements.deleteTeacherList.appendChild(div);
-      }
-    });
-
-    elements.deleteParentList.innerHTML = '';
-    Object.entries(users).forEach(([id, user]) => {
-      if (user.role === 'parent') {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `${id} <button class="button red" onclick="deleteParent('${id}')">Hapus</button>`;
-        elements.deleteParentList.appendChild(div);
-      }
-    });
-
-    elements.userIdSelect.innerHTML = '';
-    Object.entries(users).forEach(([id, user]) => {
-      const opt = document.createElement('option');
-      opt.value = id;
-      opt.textContent = `${id} (${user.role})`;
-      elements.userIdSelect.appendChild(opt);
-    });
-
-    const form = document.getElementById('addStudentParentForm');
-    if (form) form.reset();
-    ['studentNameError', 'parentIdError', 'parentPasswordError'].forEach(id => {
-      const errorDiv = document.getElementById(id);
-      if (errorDiv) {
-        errorDiv.style.display = 'none';
-        errorDiv.textContent = '';
-      }
-    });
-  };
-
-  // Add Student and Parent
-  window.addStudentAndParent = async function () {
-    const studentName = document.getElementById('studentName')?.value.trim();
-    const parentId = document.getElementById('parentId')?.value.trim();
-    const parentPassword = document.getElementById('parentPassword')?.value.trim();
-
-    ['studentNameError', 'parentIdError', 'parentPasswordError'].forEach(id => {
-      const errorDiv = document.getElementById(id);
-      if (errorDiv) {
-        errorDiv.style.display = 'none';
-        errorDiv.textContent = '';
-      }
-    });
-
-    let isValid = true;
-
-    if (!studentName) {
-      document.getElementById('studentNameError').textContent = 'Nama pelajar diperlukan.';
-      document.getElementById('studentNameError').style.display = 'block';
-      isValid = false;
-    }
-
-    if (!parentId) {
-      document.getElementById('parentIdError').textContent = 'ID ibu bapa diperlukan.';
-      document.getElementById('parentIdError').style.display = 'block';
-      isValid = false;
-    } else if (!/^[a-zA-Z0-9_]+$/.test(parentId)) {
-      document.getElementById('parentIdError').textContent = 'ID ibu bapa hanya boleh mengandungi huruf, nombor, dan garis bawah.';
-      document.getElementById('parentIdError').style.display = 'block';
-      isValid = false;
-    }
-
-    const existingParent = await getUser(parentId);
-    if (!existingParent && !parentPassword) {
-      document.getElementById('parentPasswordError').textContent = 'Kata laluan diperlukan untuk ibu bapa baru.';
-      document.getElementById('parentPasswordError').style.display = 'block';
-      isValid = false;
-    } else if (parentPassword && parentPassword.length < 6) {
-      document.getElementById('parentPasswordError').textContent = 'Kata laluan mestilah sekurang-kurangnya 6 aksara.';
-      document.getElementById('parentPasswordError').style.display = 'block';
-      isValid = false;
-    }
-
-    if (!isValid) return;
-
-    const studentId = `student_${studentName.toLowerCase().replace(/\s+/g, '_')}`;
-    const existingStudent = await getStudent(studentId);
-    if (existingStudent) {
-      document.getElementById('studentNameError').textContent = 'Pelajar dengan nama ini sudah wujud.';
-      document.getElementById('studentNameError').style.display = 'block';
-      return;
-    }
-
-    if (!existingParent) {
-      await saveUser(parentId, {
-        id: parentId,
-        password: parentPassword,
-        role: 'parent',
-        children: [studentId]
-      });
-      await saveActivityLog({
-        userId: currentUser.uid,
-        action: `Menambah ibu bapa ${parentId}`,
-        timestamp: new Date().toISOString()
-      });
-    } else {
-      existingParent.children = existingParent.children || [];
-      if (!existingParent.children.includes(studentId)) {
-        existingParent.children.push(studentId);
-        await saveUser(parentId, existingParent);
-      }
-    }
-
-    await saveStudent(studentId, {
-      name: studentName,
-      parentId,
-      points: 0,
-      rank: 'Warrior',
-      records: [],
-      badges: []
-    });
-
-    await saveNotification({
-      userId: parentId,
-      studentId: studentId,
-      text: `Pelajar ${studentName} telah ditambahkan ke akaun anda.`,
-      date: new Date().toISOString().split('T')[0]
-    });
-
-    await saveActivityLog({
-      userId: currentUser.uid,
-      action: `Menambah pelajar ${studentName} dengan ibu bapa ${parentId}`,
-      timestamp: new Date().toISOString()
-    });
-
-    alert('Pelajar dan ibu bapa ditambah!');
-    document.getElementById('addStudentParentForm').reset();
-    loadAdminPage();
-  };
-
-  // Add Teacher
-  window.addTeacher = async function () {
-    const teacherId = document.getElementById('addTeacherId')?.value;
-    const password = document.getElementById('addTeacherPassword')?.value;
-    if (!teacherId || !password) {
-      alert('Sila isi semua medan.');
-      return;
-    }
-
-    const existingTeacher = await getUser(teacherId);
-    if (existingTeacher) {
-      alert('ID Guru sudah wujud.');
-      return;
-    }
-
-    await saveUser(teacherId, {
-      id: teacherId,
-      password,
-      role: 'teacher'
-    });
-
-    await saveActivityLog({
-      userId: currentUser.uid,
-      action: `Menambah guru ${teacherId}`,
-      timestamp: new Date().toISOString()
-    });
-
-    alert('Guru ditambah!');
-    loadAdminPage();
-  };
-
-  // Delete Student
-  window.deleteStudent = async function (studentId) {
-    const student = await getStudent(studentId);
-    if (!student) return;
-
-    if (confirm(`Adakah anda pasti ingin menghapus pelajar ${student.name}?`)) {
-      const parentId = student.parentId;
-      if (parentId) {
-        const parent = await getUser(parentId);
-        if (parent) {
-          parent.children = parent.children.filter(id => id !== studentId);
-          await saveUser(parentId, parent);
-        }
-      }
-      await deleteStudent(studentId);
-      await saveActivityLog({
-        userId: currentUser.uid,
-        action: `Menghapus pelajar ${student.name}`,
-        timestamp: new Date().toISOString()
-      });
-      alert('Pelajar dihapus!');
-      loadAdminPage();
-    }
-  };
-
-  // Delete Teacher
-  window.deleteTeacher = async function (teacherId) {
-    if (confirm(`Adakah anda pasti ingin menghapus guru ${teacherId}?`)) {
-      await deleteUser(teacherId);
-      await saveActivityLog({
-        userId: currentUser.uid,
-        action: `Menghapus guru ${teacherId}`,
-        timestamp: new Date().toISOString()
-      });
-      alert('Guru dihapus!');
-      loadAdminPage();
-    }
-  };
-
-  // Delete Parent
-  window.deleteParent = async function (parentId) {
-    const parent = await getUser(parentId);
-    if (!parent) return;
-
-    if (confirm(`Adakah anda pasti ingin menghapus ibu bapa ${parentId}?`)) {
-      const students = await getAllStudents();
-      for (const [studentId, student] of Object.entries(students)) {
-        if (student.parentId === parentId) {
-          await deleteStudent(studentId);
-        }
-      }
-      await deleteUser(parentId);
-      await saveActivityLog({
-        userId: currentUser.uid,
-        action: `Menghapus ibu bapa ${parentId}`,
-        timestamp: new Date().toISOString()
-      });
-      alert('Ibu bapa dihapus!');
-      loadAdminPage();
-    }
-  };
-
-  // Update Password
-  window.updatePassword = async function () {
-    const userId = document.getElementById('userIdSelect')?.value;
-    const newPassword = document.getElementById('newPassword')?.value;
-    if (!userId || !newPassword) {
-      alert('Sila isi semua medan.');
-      return;
-    }
-
-    if (newPassword.length < 6) {
-      alert('Kata laluan mestilah sekurang-kurangnya 6 aksara.');
-      return;
-    }
-
-    const user = await getUser(userId);
-    if (!user) {
-      alert('Pengguna tidak ditemui.');
-      return;
-    }
-
-    user.password = newPassword;
-    await saveUser(userId, user);
-    await saveActivityLog({
-      userId: currentUser.uid,
-      action: `Mengemas kini kata laluan untuk ${userId}`,
-      timestamp: new Date().toISOString()
-    });
-
-    alert('Kata laluan dikemas kini!');
-    document.getElementById('newPassword').value = '';
-    loadAdminPage();
-  };
-
-  // Upload Students from Excel
-  window.uploadStudents = async function () {
-    const fileInput = document.getElementById('studentFile');
-    if (!fileInput?.files?.length) {
-      alert('Sila pilih fail Excel.');
-      return;
-    }
-
-    const file = fileInput.files[0];
-    const reader = new FileReader();
-    reader.onload = async function (e) {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(sheet);
-
-      for (const row of rows) {
-        const studentName = row['Nama Pelajar']?.trim();
-        const parentId = row['Nama Ibu Bapa']?.trim();
-        const parentPassword = row['Kata Laluan']?.trim();
-
-        if (!studentName || !parentId) {
-          console.warn(`Baris dilangkau: Nama Pelajar atau Nama Ibu Bapa tiada - ${JSON.stringify(row)}`);
-          continue;
-        }
-
-        const studentId = `student_${studentName.toLowerCase().replace(/\s+/g, '_')}`;
-        const existingStudent = await getStudent(studentId);
-        if (existingStudent) {
-          console.warn(`Pelajar ${studentName} sudah wujud, dilangkau.`);
-          continue;
-        }
-
-        const existingParent = await getUser(parentId);
-        if (!existingParent) {
-          if (!parentPassword) {
-            console.warn(`Ibu bapa ${parentId} tidak wujud dan tiada kata laluan, dilangkau.`);
-            continue;
-          }
-          await saveUser(parentId, {
-            id: parentId,
-            password: parentPassword,
-            role: 'parent',
-            children: [studentId]
-          });
-          await saveActivityLog({
-            userId: currentUser.uid,
-            action: `Menambah ibu bapa ${parentId} melalui muat naik Excel`,
-            timestamp: new Date().toISOString()
-          });
-        } else {
-          existingParent.children = existingParent.children || [];
-          if (!existingParent.children.includes(studentId)) {
-            existingParent.children.push(studentId);
-            await saveUser(parentId, existingParent);
-          }
-        }
-
-        await saveStudent(studentId, {
-          name: studentName,
-          parentId,
-          points: 0,
-          rank: 'Warrior',
-          records: [],
-          badges: []
+        await saveActivityLog({
+          userId: currentUser.uid,
+          action: `Mengedit rekod hafazan untuk pelajar ${student.name}`,
+          timestamp: new Date().toISOString()
         });
 
-        await saveNotification({
-          userId: parentId,
-          studentId: studentId,
-          text: `Pelajar ${studentName} telah ditambahkan ke akaun anda melalui muat naik Excel.`,
-          date: new Date().toISOString().split('T')[0]
+        alert('Rekod berjaya dikemas kini!');
+        loadEditRecordsTable();
+      }
+    }
+
+    // Edit Sejarah Target
+    async function editTargetHandler(event) {
+      const targetId = event.target.dataset.targetId;
+      if (!targetId) return;
+
+      const targetHistory = await getTargetHistory();
+      const target = targetHistory.find(t => t.id === parseInt(targetId));
+      if (!target) return;
+
+      const newTarget = prompt('Masukkan target baru:', target.target);
+      const newUnit = prompt('Masukkan unit baru (ayat/baris):', target.unit);
+      const newStartDate = prompt('Masukkan tarikh mula baru (YYYY-MM-DD):', target.startDate);
+      const newDeadline = prompt('Masukkan tarikh akhir baru (YYYY-MM-DD):', target.deadline);
+
+      if (newTarget && newUnit && newStartDate && newDeadline) {
+        await updateTargetHistory(targetId, {
+          target: parseInt(newTarget),
+          unit: newUnit,
+          startDate: newStartDate,
+          deadline: newDeadline
         });
 
         await saveActivityLog({
           userId: currentUser.uid,
-          action: `Menambah pelajar ${studentName} dengan ibu bapa ${parentId} melalui muat naik Excel`,
+          action: `Mengedit tetapan target ID ${targetId}`,
           timestamp: new Date().toISOString()
         });
+
+        alert('Tetapan target berjaya dikemas kini!');
+        loadTargetHistoryTable();
       }
-
-      alert('Data pelajar dimuat naik!');
-      fileInput.value = '';
-      loadAdminPage();
-    };
-    reader.readAsArrayBuffer(file);
-  };
-
-  // Load Target History Table
-  window.loadTargetHistoryTable = async function () {
-    const targetHistoryList = document.getElementById('targetHistoryList');
-    if (!targetHistoryList) return;
-
-    targetHistoryList.innerHTML = '';
-    const targets = await getTargetHistory();
-    targets.sort((a, b) => new Date(b.setDate) - new Date(a.setDate)).forEach(target => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${target.id}</td>
-        <td>${target.target}</td>
-        <td>${target.unit}</td>
-        <td>${target.startDate}</td>
-        <td>${target.deadline}</td>
-        <td>${target.setDate}</td>
-        <td>
-          <button class="edit-button" onclick="editTarget('${target.id}')">Edit</button>
-        </td>
-      `;
-      targetHistoryList.appendChild(row);
-    });
-  };
-
-  // Edit Target
-  window.editTarget = async function (targetId) {
-    const targets = await getTargetHistory();
-    const target = targets.find(t => t.id == targetId);
-    if (!target) return;
-
-    const newTarget = prompt('Masukkan target baru:', target.target);
-    const newUnit = prompt('Masukkan unit baru (ayat/baris):', target.unit);
-    const newStartDate = prompt('Masukkan tarikh mula baru (YYYY-MM-DD):', target.startDate);
-    const newDeadline = prompt('Masukkan tarikh akhir baru (YYYY-MM-DD):', target.deadline);
-
-    if (newTarget && newUnit && newStartDate && newDeadline) {
-      if (new Date(newStartDate) > new Date(newDeadline)) {
-        alert('Tarikh mula tidak boleh melebihi tarikh akhir.');
-        return;
-      }
-
-      await updateTargetHistory(targetId, {
-        target: parseInt(newTarget),
-        unit: newUnit,
-        startDate: newStartDate,
-        deadline: newDeadline
-      });
-
-      localStorage.setItem('weeklyTarget', newTarget);
-      localStorage.setItem('targetUnit', newUnit);
-      localStorage.setItem('targetStartDate', newStartDate);
-      localStorage.setItem('targetDeadline', newDeadline);
-
-      await saveActivityLog({
-        userId: currentUser.uid,
-        action: `Mengemas kini target ${targetId} kepada ${newTarget} ${newUnit}, dari ${newStartDate} hingga ${newDeadline}`,
-        timestamp: new Date().toISOString()
-      });
-
-      alert('Target dikemas kini!');
-      loadTeacherDashboard();
     }
-  };
 
-  // Load Edit Records Table
-  window.loadEditRecordsTable = async function () {
-    const editRecordsList = document.getElementById('editRecordsList');
-    if (!editRecordsList) return;
+    // Inisialisasi Aplikasi
+    function init() {
+      // Pasang pendengar acara untuk borang log masuk
+      const loginForm = document.getElementById('loginForm');
+      if (loginForm) loginForm.addEventListener('submit', login);
 
-    editRecordsList.innerHTML = '';
-    const students = await getAllStudents();
-    for (const [studentId, student] of Object.entries(students)) {
-      if (!student.records) continue;
-      student.records.forEach((record, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${student.name}</td>
-          <td>${record.date}</td>
-          <td>${record.surah}</td>
-          <td>${record.fromAyat} - ${record.toAyat}</td>
-          <td>${record.level}</td>
-          <td>${record.points}</td>
-          <td>${record.notes || 'Tiada'}</td>
-          <td>
-            <button class="edit-button" onclick="editRecord('${studentId}', ${index})">Edit</button>
-            <button class="button red" onclick="deleteRecord('${studentId}', ${index})">Hapus</button>
-          </td>
-        `;
-        editRecordsList.appendChild(row);
-      });
-    }
-  };
-
-  // Edit Record
-  window.editRecord = async function (studentId, recordIndex) {
-    const student = await getStudent(studentId);
-    const record = student.records[recordIndex];
-    if (!record) return;
-
-    const newDate = prompt('Masukkan tarikh baru (YYYY-MM-DD):', record.date);
-    const newSurah = prompt('Masukkan surah baru:', record.surah);
-    const newFromAyat = prompt('Masukkan ayat mula baru:', record.fromAyat);
-    const newToAyat = prompt('Masukkan ayat akhir baru:', record.toAyat);
-    const newLevel = prompt('Masukkan tahap baru (3/5/7/9/11/13/15):', record.level);
-    const newPoints = prompt('Masukkan mata baru:', record.points);
-    const newNotes = prompt('Masukkan catatan baru:', record.notes || '');
-
-    if (newDate && newSurah && newFromAyat && newToAyat && newLevel && newPoints) {
-      const oldPoints = record.points;
-      student.records[recordIndex] = {
-        date: newDate,
-        surah: newSurah,
-        fromAyat: parseInt(newFromAyat),
-        toAyat: parseInt(newToAyat),
-        level: newLevel,
-        points: parseInt(newPoints),
-        notes: newNotes
-      };
-
-      student.points = (student.points || 0) - oldPoints + parseInt(newPoints);
-      student.rank = calculateRank(student.points);
-      await saveStudent(studentId, student);
-
-      await saveActivityLog({
-        userId: currentUser.uid,
-        action: `Mengemas kini rekod hafazan untuk ${student.name}`,
-        timestamp: new Date().toISOString()
+      // Pasang pendengar acara untuk butang log keluar
+      ['logoutBtn', 'logoutBtnProfile', 'logoutBtnEval', 'logoutBtnAdmin'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.addEventListener('click', logout);
       });
 
-      alert('Rekod dikemas kini!');
-      loadTeacherDashboard();
-    }
-  };
+      // Pasang pendengar acara untuk penapisan leaderboard
+      const rankFilter = document.getElementById('rankFilterLeaderboard');
+      if (rankFilter) rankFilter.addEventListener('change', loadLeaderboard);
 
-  // Delete Record
-  window.deleteRecord = async function (studentId, recordIndex) {
-    if (confirm('Adakah anda pasti ingin menghapus rekod ini?')) {
-      const student = await getStudent(studentId);
-      const record = student.records[recordIndex];
-      student.records.splice(recordIndex, 1);
-      student.points = (student.points || 0) - record.points;
-      student.rank = calculateRank(student.points);
-      await saveStudent(studentId, student);
+      // Pasang pendengar acara untuk tetapan target mingguan
+      const setWeeklyTargetBtn = document.getElementById('setWeeklyTargetBtn');
+      if (setWeeklyTargetBtn) setWeeklyTargetBtn.addEventListener('click', setWeeklyTarget);
 
-      await saveActivityLog({
-        userId: currentUser.uid,
-        action: `Menghapus rekod hafazan untuk ${student.name}`,
-        timestamp: new Date().toISOString()
+      // Pasang pendengar acara untuk penilaian
+      const submitEvalBtn = document.getElementById('submitEvalBtn');
+      if (submitEvalBtn) submitEvalBtn.addEventListener('click', submitEvaluation);
+
+      const evalLevel = document.getElementById('evalLevel');
+      if (evalLevel) evalLevel.addEventListener('change', calculatePoints);
+
+      // Pasang pendengar acara untuk pentadbiran
+      const addStudentParentForm = document.getElementById('addStudentParentForm');
+      if (addStudentParentForm) addStudentParentForm.addEventListener('submit', addStudentAndParent);
+
+      const addTeacherBtn = document.getElementById('addTeacherBtn');
+      if (addTeacherBtn) addTeacherBtn.addEventListener('click', addTeacher);
+
+      const updatePasswordBtn = document.getElementById('updatePasswordBtn');
+      if (updatePasswordBtn) updatePasswordBtn.addEventListener('click', updatePassword);
+
+      const uploadStudentsBtn = document.getElementById('uploadStudentsBtn');
+      if (uploadStudentsBtn) uploadStudentsBtn.addEventListener('click', uploadStudents);
+
+      // Pasang pendengar acara untuk butang hapus
+      document.addEventListener('click', (event) => {
+        if (event.target.classList.contains('button') && event.target.classList.contains('red')) {
+          if (event.target.dataset.studentId) deleteStudentHandler(event);
+          if (event.target.dataset.teacherId) deleteTeacherHandler(event);
+          if (event.target.dataset.parentId) deleteParentHandler(event);
+        }
+        if (event.target.classList.contains('edit-button')) {
+          if (event.target.dataset.studentId) editRecordHandler(event);
+          if (event.target.dataset.targetId) editTargetHandler(event);
+        }
       });
 
-      alert('Rekod dihapus!');
-      loadTeacherDashboard();
+      // Tetapkan halaman lalai
+      showPage('loginPage');
     }
-  };
-});
-</script>
+
+    // Jalankan inisialisasi
+    init();
+  </script>
 </body>
 </html>
-<!-- End of HTML Document -->
